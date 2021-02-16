@@ -1,0 +1,4 @@
+page 0 contains text and data, page 1 is a guard page, page 2 is stack;
+When running in user mode, the process cant't read/write the memory mapped by page 1, it's invalid
+
+'srcva + len < srcva' make sure that 'srcva + len' does not not overflow
