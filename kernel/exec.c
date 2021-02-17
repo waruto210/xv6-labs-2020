@@ -51,9 +51,6 @@ exec(char *path, char **argv)
     uint64 sz1;
     if((sz1 = uvmalloc(pagetable, sz, ph.vaddr + ph.memsz)) == 0)
       goto bad;
-    if(sz1 > PLIC)
-      goto bad;
-
     sz = sz1;
     if(ph.vaddr % PGSIZE != 0)
       goto bad;
@@ -78,7 +75,6 @@ exec(char *path, char **argv)
   sp = sz;
   stackbase = sp - PGSIZE;
 
-  u2kvmcopy(pagetable, p->kpagetable, 0, sz);
 
   // Push argument strings, prepare rest of stack in ustack.
   for(argc = 0; argv[argc]; argc++) {
@@ -124,6 +120,8 @@ exec(char *path, char **argv)
   if(p->pid == 1) {
     vmprint(p->pagetable);
   }
+
+  u2kvmcopy(p->pagetable, p->kpagetable, 0, p->sz);
 
   return argc; // this ends up in a0, the first argument to main(argc, argv)
 

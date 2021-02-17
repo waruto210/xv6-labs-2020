@@ -53,17 +53,22 @@ kvminit()
 pagetable_t
 proc_kvminit(void) 
 {  
+  int i;
   pagetable_t proc_kpagetable = uvmcreate();
   if (proc_kpagetable == 0) {
     return 0;
   }
+  for(i = 1; i < 512; i++) {
+    proc_kpagetable[i] = kernel_pagetable[i];
+  }
 
   ukvmmap(proc_kpagetable, UART0, UART0, PGSIZE, PTE_R | PTE_W);
   ukvmmap(proc_kpagetable, VIRTIO0, VIRTIO0, PGSIZE, PTE_R | PTE_W);
+  ukvmmap(proc_kpagetable, CLINT, CLINT, 0x10000, PTE_R | PTE_W);
   ukvmmap(proc_kpagetable, PLIC, PLIC, 0x400000, PTE_R | PTE_W);
-  ukvmmap(proc_kpagetable, KERNBASE, KERNBASE, (uint64)etext-KERNBASE, PTE_R | PTE_X);
-  ukvmmap(proc_kpagetable, (uint64)etext, (uint64)etext, PHYSTOP-(uint64)etext, PTE_R | PTE_W);
-  ukvmmap(proc_kpagetable, TRAMPOLINE, (uint64)trampoline, PGSIZE, PTE_R | PTE_X);
+  // ukvmmap(proc_kpagetable, KERNBASE, KERNBASE, (uint64)etext-KERNBASE, PTE_R | PTE_X);
+  // ukvmmap(proc_kpagetable, (uint64)etext, (uint64)etext, PHYSTOP-(uint64)etext, PTE_R | PTE_W);
+  // ukvmmap(proc_kpagetable, TRAMPOLINE, (uint64)trampoline, PGSIZE, PTE_R | PTE_X);
 
   return proc_kpagetable;
 }
@@ -161,7 +166,7 @@ kvmpa(uint64 va)
   uint64 off = va % PGSIZE;
   pte_t *pte;
   uint64 pa;
-  pte = walk(myproc()->kpagetable, va, 0);
+  pte = walk(kernel_pagetable, va, 0);
   if(pte == 0)
     panic("kvmpa");
   if((*pte & PTE_V) == 0)
@@ -509,22 +514,19 @@ vmprint(pagetable_t pagetable) {
 void
 u2kvmcopy(pagetable_t pagetable, pagetable_t kpagetable, uint64 oldsz, uint64 newsz) 
 {
-  pte_t *pte_from, *pte_to;
-  uint64 va, pa;
-  uint64 flags;
-  if (newsz < oldsz)
-    return;
-  oldsz = PGROUNDUP(oldsz);
-  for(va = oldsz; va < newsz; va += PGSIZE)
-  {
-    if((pte_from = walk(pagetable, va, 0)) == 0) {
-      panic("u2kvmcopy: pte should exist");
-    }
-    if((pte_to = walk(kpagetable, va, 1)) == 0) {
-      panic("u2kvmcopy: walk fails");
-    }
-    pa = PTE2PA(*pte_from);
-    flags = (PTE_FLAGS(*pte_from) & (~PTE_U));
-    *pte_to = PA2PTE(pa) | flags;
+  uint64 va;
+  pte_t *upte;
+  pte_t *kpte;
+
+  if(newsz >= PLIC)
+    panic("u2kvmcopy: newsz too large");
+
+  for (va = oldsz; va < newsz; va += PGSIZE) {
+    upte = walk(pagetable, va, 0);
+    kpte = walk(kpagetable, va, 1);
+    *kpte = *upte;
+    // because the user mapping in kernel page table is only used for copyin 
+    // so the kernel don't need to have the W,X,U bit turned on
+    *kpte &= ~(PTE_U|PTE_W|PTE_X);
   }
 }
