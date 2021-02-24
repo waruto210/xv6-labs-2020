@@ -1,0 +1,19 @@
+name: xv6-CI
+
+on:
+  push:
+    branches: [ util ]
+  pull_request:
+    branches: [ util ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: toolchian
+      run: apt install -y git build-essential gdb-multiarch qemu-system-misc gcc-riscv64-linux-gnu binutils-riscv64-linux-gnu
+    - name: make grade
+      run: make grade
