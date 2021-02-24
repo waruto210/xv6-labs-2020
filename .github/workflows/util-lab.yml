@@ -1,4 +1,4 @@
-name: xv6-lab
+name: util-lab
 
 on:
   push:
