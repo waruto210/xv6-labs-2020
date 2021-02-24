@@ -120,15 +120,18 @@ found:
     release(&p->lock);
     return 0;
   }
+  // initialize value for alarm
+  p->passed = 0;
+  p->permission = 1;
+  p->alarm_hanlder = 0;
+  p->alarm_interval = 0;
 
   // Set up new context to start executing at forkret,
   // which returns to user space.
   memset(&p->context, 0, sizeof(p->context));
   p->context.ra = (uint64)forkret;
   p->context.sp = p->kstack + PGSIZE;
-  // initialize value for alarm
-  p->passed = 0;
-  p->permission = 1;
+
   return p;
 }
 

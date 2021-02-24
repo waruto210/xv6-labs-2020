@@ -22,5 +22,6 @@ xv6.out*
 .vagrant/
 submissions/
 .vscode/
+__pycache__
 ph
 barrier
