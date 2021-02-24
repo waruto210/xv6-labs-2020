@@ -1,0 +1,6 @@
+a0-a7 and fa0-fa7 contain arguments to functions, a2 holds 13
+at 0x24, functions are inline and return value is calculted by compiler
+printf is at 0x628
+ra holds the return address 0x38
+print "HE110 World", set i to 0x726c6400,
+will print "y= the value of register a2"
