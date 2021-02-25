@@ -37,6 +37,7 @@ void
 usertrap(void)
 {
   int which_dev = 0;
+  uint64 cause;
 
   if((r_sstatus() & SSTATUS_SPP) != 0)
     panic("usertrap: not from user mode");
@@ -49,8 +50,8 @@ usertrap(void)
   
   // save user program counter.
   p->trapframe->epc = r_sepc();
-  
-  if(r_scause() == 8){
+  cause = r_scause();
+  if(cause == 8){
     // system call
 
     if(p->killed)
@@ -65,6 +66,18 @@ usertrap(void)
     intr_on();
 
     syscall();
+  }  else if(cause == 13 || cause == 15) {
+    uint64 va = r_stval();
+    // if(lazy_uvmalloc(p->pagetable, va) != 0) {
+    //   p->killed = 1;
+    // }
+    if (va >= p->sz || va < p->trapframe->sp)
+      p->killed = 1;
+    else {
+      if(lazy_uvmalloc(p->pagetable, va) != 0) {
+          p->killed = 1;
+      }
+    }
   } else if((which_dev = devintr()) != 0){
     // ok
   } else {
