@@ -37,6 +37,7 @@ void
 usertrap(void)
 {
   int which_dev = 0;
+  uint64 va;
 
   if((r_sstatus() & SSTATUS_SPP) != 0)
     panic("usertrap: not from user mode");
@@ -67,6 +68,18 @@ usertrap(void)
     syscall();
   } else if((which_dev = devintr()) != 0){
     // ok
+  } else if(r_scause() == 13 || r_scause() == 15) {
+    va = r_stval();
+    if (va < PGROUNDDOWN(p->trapframe->sp) && 
+        va >= PGROUNDDOWN(p->trapframe->sp) - PGSIZE) {
+      // guard page
+      p->killed = 1;
+    } else {
+      int ret;
+      if((ret = cow_alloc(p->pagetable, va)) < 0 ) {
+        p->killed = 1;
+      }
+    }
   } else {
     printf("usertrap(): unexpected scause %p pid=%d\n", r_scause(), p->pid);
     printf("            sepc=%p stval=%p\n", r_sepc(), r_stval());
@@ -75,7 +88,7 @@ usertrap(void)
 
   if(p->killed)
     exit(-1);
-
+    
   // give up the CPU if this is a timer interrupt.
   if(which_dev == 2)
     yield();
