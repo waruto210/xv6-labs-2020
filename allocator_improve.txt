@@ -1,0 +1,20 @@
+$ kalloctest
+start test1
+test1 results:
+--- lock kmem/bcache stats
+lock: kmem0: #fetch-and-add 0 #acquire() 65683
+lock: kmem1: #fetch-and-add 0 #acquire() 190628
+lock: kmem2: #fetch-and-add 0 #acquire() 176734
+lock: bcache: #fetch-and-add 0 #acquire() 1242
+--- top 5 contended locks:
+lock: proc: #fetch-and-add 35310 #acquire() 112156
+lock: virtio_disk: #fetch-and-add 11562 #acquire() 114
+lock: proc: #fetch-and-add 4717 #acquire() 112193
+lock: proc: #fetch-and-add 4242 #acquire() 112196
+lock: proc: #fetch-and-add 4058 #acquire() 112181
+tot= 0
+test1 OK
+start test2
+total free number of pages: 32499 (out of 32768)
+.....
+test2 OK

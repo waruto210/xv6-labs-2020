@@ -1,0 +1,15 @@
+$ bcachetest
+start test0
+test0 results:
+--- lock kmem/bcache stats
+lock: bcache: #fetch-and-add 90245 #acquire() 65022
+--- top 5 contended locks:
+lock: virtio_disk: #fetch-and-add 157311 #acquire() 1137
+lock: bcache: #fetch-and-add 90245 #acquire() 65022
+lock: proc: #fetch-and-add 82586 #acquire() 73871
+lock: proc: #fetch-and-add 59647 #acquire() 73519
+lock: proc: #fetch-and-add 29617 #acquire() 73520
+tot= 90245
+test0: FAIL
+start test1
+test1 OK

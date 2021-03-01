@@ -1,0 +1,28 @@
+$ bcachetest
+start test0
+test0 results:
+--- lock kmem/bcache stats
+lock: bcache.bucket0: #fetch-and-add 0 #acquire() 6174
+lock: bcache.bucket1: #fetch-and-add 0 #acquire() 6176
+lock: bcache.bucket2: #fetch-and-add 0 #acquire() 6336
+lock: bcache.bucket3: #fetch-and-add 0 #acquire() 6328
+lock: bcache.bucket4: #fetch-and-add 0 #acquire() 4270
+lock: bcache.bucket5: #fetch-and-add 0 #acquire() 4264
+lock: bcache.bucket6: #fetch-and-add 0 #acquire() 2680
+lock: bcache.bucket7: #fetch-and-add 0 #acquire() 4672
+lock: bcache.bucket8: #fetch-and-add 0 #acquire() 4400
+lock: bcache.bucket9: #fetch-and-add 0 #acquire() 4121
+lock: bcache.bucket10: #fetch-and-add 0 #acquire() 4169
+lock: bcache.bucket11: #fetch-and-add 0 #acquire() 6178
+lock: bcache.bucket12: #fetch-and-add 0 #acquire() 6176
+lock: bcache: #fetch-and-add 0 #acquire() 7
+--- top 5 contended locks:
+lock: virtio_disk: #fetch-and-add 144778 #acquire() 1197
+lock: proc: #fetch-and-add 82509 #acquire() 73738
+lock: proc: #fetch-and-add 8076 #acquire() 73425
+lock: proc: #fetch-and-add 7466 #acquire() 73385
+lock: proc: #fetch-and-add 7014 #acquire() 73384
+tot= 0
+test0: OK
+start test1
+test1 OK
