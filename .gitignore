@@ -5,6 +5,8 @@ _*
 *.asm
 *.sym
 *.img
+*.pyc
+.DS_Store
 vectors.S
 bootblock
 entryother
@@ -19,6 +21,7 @@ myapi.key
 *-handin.tar.gz
 xv6.out*
 .vagrant/
+.vscode/
 submissions/
 ph
 barrier
