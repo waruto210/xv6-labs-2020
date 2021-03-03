@@ -9,3 +9,4 @@
 - [x] lab7 [Multithreading](https://wmc1999.top/2021/02/28/6-s081-lab7-thread/)
 - [x] lab8 [Lock](https://wmc1999.top/2021/03/01/6-s081-lab8-lock/)
 - [x] lab9 [File system](https://wmc1999.top/2021/03/02/6-s081-lab9-fs/)
+- [x] lab10 [Mmap](https://wmc1999.top/2021/03/03/6-s081-lab10-mmap/)
